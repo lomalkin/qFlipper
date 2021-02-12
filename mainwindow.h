@@ -19,7 +19,8 @@ public:
     ~MainWindow();
 
 protected:
-    void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent *) override;
+    void timerEvent(QTimerEvent *event) override;
 
 private:
     Ui::MainWindow *ui;

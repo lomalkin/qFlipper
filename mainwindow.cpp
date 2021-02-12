@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(serial, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(parser, SIGNAL(screenData(QByteArray)), ui->widget, SLOT(data(QByteArray)));
     onPortsUpdate();
+    startTimer(1000);
 }
 
 MainWindow::~MainWindow()
@@ -40,6 +41,13 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     auto height = qMin(full_height, (int)(full_width / aspect));
 
     resize(width, height);
+}
+
+void MainWindow::timerEvent(QTimerEvent *event) {
+    (void)event;
+    if(!serial->isOpen()) {
+        onPortsUpdate();
+    }
 }
 
 void MainWindow::openPort() {
@@ -74,6 +82,7 @@ void MainWindow::closePort() {
 }
 
 void MainWindow::onPortsUpdate() {
+    auto location = ui->portComboBox->currentText();
     ui->portComboBox->clear();
 
     auto ports = QSerialPortInfo::availablePorts();
