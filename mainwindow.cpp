@@ -3,6 +3,7 @@
 #include "streamparser.h"
 
 #include <QResizeEvent>
+#include <QAbstractItemView>
 #include <QSerialPortInfo>
 #include <QSerialPort>
 #include <QDebug>
@@ -45,7 +46,7 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 
 void MainWindow::timerEvent(QTimerEvent *event) {
     (void)event;
-    if(!serial->isOpen()) {
+    if(!serial->isOpen() && !ui->portComboBox->view()->isVisible()) {
         onPortsUpdate();
     }
 }
@@ -75,6 +76,7 @@ void MainWindow::openPort() {
 
 void MainWindow::closePort() {
     qDebug() << this << "Closing port";
+    serial->write("\0");
     serial->close();
     ui->portConnectButton->setText("Connect");
     ui->portComboBox->setEnabled(true);
@@ -99,6 +101,7 @@ void MainWindow::onPortsUpdate() {
             ;
         ui->portComboBox->addItem(port.systemLocation());
     }
+    ui->portComboBox->setCurrentText(location);
 }
 
 void MainWindow::onConnect() {
