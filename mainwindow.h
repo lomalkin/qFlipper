@@ -31,6 +31,7 @@ private:
     void closePort();
 
 private slots:
+    void onSerialClose();
     void onPortsUpdate();
     void onConnect();
     void onScreenSave();

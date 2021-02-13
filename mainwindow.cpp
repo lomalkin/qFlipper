@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->portConnectButton, SIGNAL(clicked()), this, SLOT(onConnect()));
     connect(ui->screenSaveButton, SIGNAL(clicked()), this, SLOT(onScreenSave()));
     connect(serial, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+    connect(serial, SIGNAL(aboutToClose()), this, SLOT(onSerialClose()));
     connect(parser, SIGNAL(screenData(QByteArray)), ui->widget, SLOT(data(QByteArray)));
     onPortsUpdate();
     startTimer(1000);
@@ -82,6 +83,9 @@ void MainWindow::closePort() {
     qDebug() << this << "Closing port";
     serial->write("\0");
     serial->close();
+}
+
+void MainWindow::onSerialClose() {
     ui->portConnectButton->setText("Connect");
     ui->portComboBox->setEnabled(true);
     ui->widget->clearCanvas();
