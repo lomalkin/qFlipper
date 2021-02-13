@@ -3,6 +3,7 @@
 #include "streamparser.h"
 
 #include <QResizeEvent>
+#include <QFileDialog>
 #include <QAbstractItemView>
 #include <QSerialPortInfo>
 #include <QSerialPort>
@@ -15,7 +16,10 @@ MainWindow::MainWindow(QWidget *parent)
     , parser(new StreamParser(this))
 {
     ui->setupUi(this);
+    ui->screenSaveButton->setIcon(this->style()->standardIcon(QStyle::SP_DialogSaveButton));
+
     connect(ui->portConnectButton, SIGNAL(clicked()), this, SLOT(onConnect()));
+    connect(ui->screenSaveButton, SIGNAL(clicked()), this, SLOT(onScreenSave()));
     connect(serial, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(parser, SIGNAL(screenData(QByteArray)), ui->widget, SLOT(data(QByteArray)));
     onPortsUpdate();
@@ -109,6 +113,16 @@ void MainWindow::onConnect() {
         closePort();
     } else {
         openPort();
+    }
+}
+
+void MainWindow::onScreenSave() {
+    auto filename = QFileDialog::getSaveFileName(
+        this,
+        "Save flipper screen to file"
+        );
+    if (!filename.isEmpty()) {
+        ui->widget->saveToFile(filename);
     }
 }
 

@@ -33,6 +33,7 @@ private:
 private slots:
     void onPortsUpdate();
     void onConnect();
+    void onScreenSave();
     void onReadyRead();
 };
 #endif // MAINWINDOW_H
