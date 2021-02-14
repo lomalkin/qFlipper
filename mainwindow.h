@@ -32,6 +32,7 @@ private:
 
 private slots:
     void onSerialClose();
+    void onSerialError(QSerialPort::SerialPortError);
     void onPortsUpdate();
     void onConnect();
     void onScreenSave();

@@ -6,7 +6,6 @@
 #include <QFileDialog>
 #include <QAbstractItemView>
 #include <QSerialPortInfo>
-#include <QSerialPort>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -20,9 +19,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->portConnectButton, SIGNAL(clicked()), this, SLOT(onConnect()));
     connect(ui->screenSaveButton, SIGNAL(clicked()), this, SLOT(onScreenSave()));
+    // Serial
     connect(serial, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(serial, SIGNAL(aboutToClose()), this, SLOT(onSerialClose()));
+    connect(serial, SIGNAL(error(QSerialPort::SerialPortError)), this, SLOT(onSerialError(QSerialPort::SerialPortError)));
+    // Parser
     connect(parser, SIGNAL(screenData(QByteArray)), ui->widget, SLOT(data(QByteArray)));
+    // Final touches
     onPortsUpdate();
     startTimer(1000);
 }
@@ -89,6 +92,13 @@ void MainWindow::onSerialClose() {
     ui->portConnectButton->setText("Connect");
     ui->portComboBox->setEnabled(true);
     ui->widget->clearCanvas();
+}
+
+void MainWindow::onSerialError(QSerialPort::SerialPortError error) {
+    qDebug() << this << error;
+    if (error == QSerialPort::ResourceError) {
+        serial->close();
+    }
 }
 
 void MainWindow::onPortsUpdate() {
