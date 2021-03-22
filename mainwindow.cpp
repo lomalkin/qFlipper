@@ -107,7 +107,7 @@ void MainWindow::onPortsUpdate() {
 
     auto ports = QSerialPortInfo::availablePorts();
     foreach (auto port, ports) {
-        if (port.manufacturer() != "Flipper")
+        if (!port.manufacturer().contains("Flipper"))
             continue;
         qDebug()
             << port.portName()
