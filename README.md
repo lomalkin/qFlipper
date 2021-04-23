@@ -1,0 +1,5 @@
+# qFlipper
+
+## Build
+
+`./build.sh`
